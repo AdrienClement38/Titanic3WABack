@@ -32,6 +32,7 @@ async function init() {
     })
 
 
+
     app.get("/passengers/search/:name", async (req, res) => {
 
       try {
@@ -125,8 +126,23 @@ async function init() {
       }
     })
 
+    app.post("/auth/subscribe", async (req, res) => {
+      try {
 
-    app.post("/login", async (req, res) => {
+          const Users = await UsersModel.findOne(req.body);
+          if (Users) {
+              res.status(401).send("Un erreur est survenue, veuillez recommencer");
+          } else {
+              const newUser = await UsersModel.create(req.body)
+              res.json("Utilisateur enregistré");
+          }
+      } catch (err) {
+          res.status(500).send(err.message);
+      }
+  })
+
+
+    app.post("/auth/login", async (req, res) => {
       try {
         
         const Users = await UsersModel.findOne( req.body );
@@ -146,5 +162,7 @@ async function init() {
     app.listen(8000, () =>
     console.log(`Server running at http://localhost:8000/`)
   );
+
+  
 
 };
